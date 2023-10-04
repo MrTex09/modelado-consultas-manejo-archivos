@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Agregar Autor</title>
+  </head>
+  <body>
+    <h1>Agregar Autor</h1>
+    <form action="/autores/crear" method="POST">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" required />
+      <br />
+      <label for="apellido">Apellido:</label>
+      <input type="text" id="apellido" name="apellido" required />
+      <br />
+      <label for="biografia">Biografía:</label>
+      <textarea id="biografia" name="biografia"></textarea>
+      <br />
+      <button type="submit">Guardar Autor</button>
+    </form>
+  </body>
+</html>
