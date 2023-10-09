@@ -6,6 +6,9 @@ import fileUpload from "express-fileupload";
 import rutasLibros from "./routes/libros.js";
 import rutasAutor from "./routes/autores.js";
 const app = express();
+// Configurar Express para servir archivos estáticos desde la carpeta "public"
+app.use(express.static("public"));
+app.use(express.json());
 
 const connectMongoDb = async () => {
   try {
@@ -17,10 +20,10 @@ const connectMongoDb = async () => {
 };
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+
 app.use(fileUpload());
 app.use("/libros", rutasLibros);
-app.use("/autores", rutasAutor);
+app.use("/autor", rutasAutor);
 
 app.listen(3000, () => {
   console.log("Servidor en funcionamiento en el puerto 3000");

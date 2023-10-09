@@ -2,28 +2,30 @@ import { Router } from "express";
 import { autorModel } from "../models/autor.js";
 const rutasAutor = Router();
 // Ruta para crear un nuevo autor
-rutasAutor.post("/crear", async (req, res) => {
+rutasAutor.post("/", async (req, res) => {
   try {
-    const nuevoAutor = new Autor({
+    const nuevoAutor = new autorModel({
       nombre: req.body.nombre,
       apellido: req.body.apellido,
       biografia: req.body.biografia,
     });
 
-    const autorGuardado = await autorModel.save();
+    const autorGuardado = await nuevoAutor.save(); // Corrección aquí
 
     res.json(autorGuardado);
   } catch (error) {
+    console.log(error, "nose pudo crear");
     res.status(400).json({ error: "No se pudo crear el autor" });
   }
 });
-
 // Ruta para obtener la lista de autores
-rutasAutor.get("/listar", async (req, res) => {
+rutasAutor.get("/", async (req, res) => {
   try {
     const autores = await autorModel.find();
-    res.json(autores);
+
+    res.json(autores); // Aquí se envía la lista de autores como respuesta JSON
   } catch (error) {
+    console.error(error);
     res.status(400).json({ error: "No se pudo obtener la lista de autores" });
   }
 });
@@ -67,6 +69,26 @@ rutasAutor.delete("/:id", async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: "No se pudo eliminar el autor" });
   }
+});
+
+rutasAutor.post("/upload", (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send("No se encontraron archivos para cargar.");
+  }
+
+  // Accede a los archivos cargados
+  const archivoCargado = req.files.archivo; // "archivo" es el nombre del campo del formulario
+
+  // Puedes hacer lo que quieras con el archivo cargado aquí, como guardarlo en el sistema de archivos o en la base de datos.
+
+  // Ejemplo: Guardar el archivo en el sistema de archivos
+  archivoCargado.mv(`./uploads/${archivoCargado.name}`, (err) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+
+    res.send("Archivo cargado correctamente.");
+  });
 });
 
 export default rutasAutor;
