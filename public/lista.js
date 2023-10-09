@@ -1,13 +1,14 @@
+// Función para cargar y mostrar la lista de libros
 async function cargarListaLibros() {
   try {
-    const response = await fetch("/libros"); // Debes ajustar la URL según la ruta en tu servidor Express
+    const response = await fetch("/libros"); // Ajusta la URL según la ruta en tu servidor Express
     const libros = await response.json();
 
     const listaLibros = document.getElementById("listaLibros");
 
     libros.forEach((libro) => {
       const li = document.createElement("li");
-      li.textContent = `Título: ${libro.titulo}, Género: ${libro.genero}, Año de Publicación: ${libro.añoPublicacion}`;
+      li.textContent = `Título: ${libro.titulo}, Género: ${libro.genero}, autor: ${libro.autor.nombre} ${libro.autor.apellido}`;
       listaLibros.appendChild(li);
     });
   } catch (error) {

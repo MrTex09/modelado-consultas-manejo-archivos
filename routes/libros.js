@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { libroModel } from "../models/libros.js";
 const rutasLibros = Router();
+import { autorModel } from "../models/autor.js";
 
 // Ruta para crear un nuevo libro
 
@@ -13,12 +14,21 @@ rutasLibros.post("/", async (req, res) => {
     }
 
     const portada = req.files.portada; // Accede al archivo de la portada
+    const autorId = req.body.autorId; // ID del autor ingresado manualmente
+
+    // Verifica si el autor existe en la base de datos
+    const autorExistente = await autorModel.findById(autorId);
+
+    if (!autorExistente) {
+      return res.status(400).json({ error: "El autor ingresado no existe." });
+    }
 
     const nuevoLibro = new libroModel({
       titulo: req.body.titulo,
       genero: req.body.genero,
       añoPublicacion: req.body.añoPublicacion,
       portada: `/img/${portada.name}`, // Ruta de la imagen de portada
+      autor: autorId, // Asigna el ID del autor al libro
     });
 
     await portada.mv(`./img/${portada.name}`); // Guarda el archivo de portada en el sistema de archivos
@@ -35,7 +45,7 @@ rutasLibros.post("/", async (req, res) => {
 // Ruta para obtener la lista de libros
 rutasLibros.get("/", async (req, res) => {
   try {
-    const libros = await libroModel.find();
+    const libros = await libroModel.find().populate("autor");
     res.json(libros);
   } catch (error) {
     console.error(error);
